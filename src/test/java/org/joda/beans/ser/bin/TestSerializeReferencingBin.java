@@ -36,7 +36,7 @@ import org.joda.beans.sample.ImmGuava;
 import org.joda.beans.sample.ImmJodaConvertBean;
 import org.joda.beans.sample.ImmJodaConvertWrapper;
 import org.joda.beans.sample.ImmOptional;
-import org.joda.beans.sample.ImmTreeNode;
+import org.joda.beans.sample.ImmTree;
 import org.joda.beans.sample.JodaConvertInterface;
 import org.joda.beans.ser.JodaBeanSer;
 import org.joda.beans.ser.SerTestHelper;
@@ -112,13 +112,13 @@ public class TestSerializeReferencingBin {
 
     @Test
     public void test_writeTree() {
-        ImmTreeNode treeNode = SerTestHelper.testTree();
+        ImmTree treeNode = SerTestHelper.testTree();
         byte[] bytes = JodaBeanSer.COMPACT.binWriterReferencing().write(treeNode);
         byte[] regularBytes = JodaBeanSer.COMPACT.binWriter().write(treeNode);
 //        System.out.println(JodaBeanBinReader.visualize(bytes));
 
-        ImmTreeNode bean = (ImmTreeNode) JodaBeanSer.COMPACT.binReader().read(bytes);
-        //System.out.println(bean);
+        ImmTree bean = JodaBeanSer.COMPACT.binReader().read(bytes, ImmTree.class);
+//        System.out.println(bean);
         BeanAssert.assertBeanEquals(bean, treeNode);
         assertTrue(bytes.length < regularBytes.length / 2d);
     }

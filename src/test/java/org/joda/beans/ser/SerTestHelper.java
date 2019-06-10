@@ -37,7 +37,7 @@ import org.joda.beans.sample.ImmJodaConvertWrapper;
 import org.joda.beans.sample.ImmKey;
 import org.joda.beans.sample.ImmOptional;
 import org.joda.beans.sample.ImmPerson;
-import org.joda.beans.sample.ImmTreeNode;
+import org.joda.beans.sample.ImmTree;
 import org.joda.beans.sample.JodaConvertInterface;
 import org.joda.beans.sample.Person;
 import org.joda.beans.sample.PrimitiveBean;
@@ -248,27 +248,22 @@ public class SerTestHelper {
                 .build()
         });
     }
-
-    public static ImmTreeNode testTree() {
-        ImmutableList<ImmTreeNode> childList = ImmutableList.of(
-            ImmTreeNode.builder().name("First child").build(),
-            ImmTreeNode.builder().name("Second child").build(),
-            ImmTreeNode.builder().name("Third child").build());
-        return ImmTreeNode.of(
+    
+    public static ImmTree testTree() {
+        ImmutableList<ImmTree> baseChildList = ImmutableList.of(
+                ImmTree.of("First child"),
+                ImmTree.of("Second child"),
+                ImmTree.of("Third child"));
+        ImmutableList<ImmTree> nestedChildList = ImmutableList.of(
+                ImmTree.of("First child", baseChildList),
+                ImmTree.of("Second child"),
+                ImmTree.of("Third child", baseChildList));
+        return ImmTree.of(
             "Root Node",
-            ImmTreeNode.builder().name("First child").build(),
-            ImmTreeNode.builder().name("Second child").build(),
-            ImmTreeNode.builder().name("Third child").build(),
             ImmutableList.of(
-                ImmTreeNode.builder().name("First child").build(),
-                ImmTreeNode.builder().name("Third child").build(),
-                ImmTreeNode.builder()
-                    .name("Fourth child")
-                    .child3(ImmTreeNode.builder().name("Third child")
-                        .childList(childList)
-                        .build())
-                    .childList(childList)
-                    .build()));
+                ImmTree.of("First child", nestedChildList),
+                ImmTree.of("Third child", baseChildList),
+                ImmTree.of("Fourth child", nestedChildList)));
     }
 
     public static SimpleJson testSimpleJson() {

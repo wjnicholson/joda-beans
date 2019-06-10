@@ -124,7 +124,19 @@ class JodaBeanReferencingBinWriter extends AbstractBinWriter {
             } else {
                 SerIterator itemIterator = settings.getIteratorFactory().create(value, prop, bean.getClass());
                 if (itemIterator != null) {
-                    writeElements(itemIterator);
+                    Ref valueRef = references.getReferences().get(value);
+                    if (valueRef != null) {
+                        if (valueRef.hasBeenSerialized) {
+                            output.writePositiveExtensionInt(MsgPack.JODA_TYPE_REF, valueRef.position);
+                        } else {
+                            output.writeMapHeader(1);
+                            output.writePositiveExtensionInt(MsgPack.JODA_TYPE_REF_KEY, valueRef.position);
+                            writeElements(itemIterator);
+                            valueRef.sent();
+                        }
+                    } else {
+                        writeElements(itemIterator);
+                    }
                 } else {
                     writeSimple(propType, value);
                 }

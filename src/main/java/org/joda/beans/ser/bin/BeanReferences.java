@@ -156,6 +156,12 @@ final class BeanReferences {
                             if (itemIterator.metaTypeRequired()) {
                                 objects.compute(itemIterator.metaTypeName(), BeanReferences::incrementOrOne);
                             }
+                            if (itemIterator.size() != 0) {
+                                result = objects.compute(value, BeanReferences::incrementOrOne);
+                                if (result > 1) {
+                                    continue;
+                                }
+                            }
                             findReferencesIterable(itemIterator, objects);
                         } else {
                             findReferencesBean(value, type, objects, null);
